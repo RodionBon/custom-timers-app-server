@@ -3,12 +3,8 @@ import { signIn, signUp } from "../controllers/auth.controller";
 
 const router = new Router();
 
-router.post('/signin', async ctx => {
-    await signIn(ctx);
-})
+router.post('/signin', signIn);
 
-router.post('/signup', async ctx => {
-    await signUp(ctx);
-})
+router.post('/signup', signUp);
 
 export default router;
