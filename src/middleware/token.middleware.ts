@@ -2,7 +2,6 @@ import { Context, Next } from 'koa';
 import * as jwt from 'jsonwebtoken';
 
 export const auth = async (ctx: Context, next: Next) => {
-    console.log('Authenticating request...');
     if (!process.env.JWT_SECRET) {
         throw new Error('JWT_SECRET is not defined');
     }
