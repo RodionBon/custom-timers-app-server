@@ -84,6 +84,21 @@ export const updateTimer = async (ctx: Context) => {
     try {
         const timer = await getTimerByIdWithAuth(ctx);
         if (!timer) return;
+        
+        const registerSchema = Joi.object({
+            name: Joi.string().required(),
+            exerciseDuration: Joi.number().required(),
+            restDuration: Joi.number().required(),
+            rounds: Joi.number().required(),
+        });
+
+        const { error, value } = registerSchema.validate(ctx.request.body);
+
+        if (error) {
+            ctx.status = 400;
+            ctx.body = { error: error.details[0].message };
+            return;
+        }
 
         await timer.update(ctx.request.body);
         ctx.status = 200;
