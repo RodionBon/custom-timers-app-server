@@ -15,12 +15,18 @@ export const auth = async (ctx: Context, next: Next) => {
 
     const token = authHeader.split(' ')[1];
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (typeof decoded !== 'object' || !('id' in decoded)) {
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id?: string | number };
+        if (!decoded || typeof decoded !== 'object' || !('id' in decoded)) {
+            ctx.status = 401;
+            ctx.body = { error: 'Invalid token.' };
+            return;
+        }
+        ctx.state.user = { id: decoded.id };
+        await next();
+    } catch (err) {
         ctx.status = 401;
         ctx.body = { error: 'Invalid token.' };
         return;
     }
-    ctx.state.user = { id: decoded.id };
-    await next();
 };
